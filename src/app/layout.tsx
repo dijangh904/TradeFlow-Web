@@ -5,6 +5,7 @@ import ToasterProvider from "../components/general/ToasterProvider";
 import { SlippageProvider } from "../contexts/SlippageContext";
 import Footer from "../components/layout/Footer";
 import NetworkCongestionBanner from "../components/NetworkCongestionBanner";
+import ErrorBoundary from "../components/ErrorBoundary";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,15 +25,16 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="font-sans min-h-screen flex flex-col">
-        <SlippageProvider>
-
-          <NetworkCongestionBanner />
-          <div className="flex-1">
-            {children}
-          </div>
-        </SlippageProvider>
-        <Footer />
-        <ToasterProvider />
+        <ErrorBoundary>
+          <SlippageProvider>
+            <NetworkCongestionBanner />
+            <div className="flex-1">
+              {children}
+            </div>
+          </SlippageProvider>
+          <Footer />
+          <ToasterProvider />
+        </ErrorBoundary>
       </body>
     </html>
   );
