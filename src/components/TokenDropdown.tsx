@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import { ChevronDown, Search, X } from "lucide-react";
 import { useDebounce } from "../hooks/useDebounce";
 import { useRecentTokens } from "../hooks/useRecentTokens";
+import { useWatchlist } from "../hooks/useWatchlist";
+import StarIcon from "./StarIcon";
 
 interface TokenDropdownProps {
   onTokenChange?: (token: string) => void;
@@ -14,6 +16,7 @@ export default function TokenDropdown({ onTokenChange }: TokenDropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { recentTokens, addRecentToken } = useRecentTokens();
+  const { toggleWatchlist, isInWatchlist } = useWatchlist();
 
   // Debounce the search input with 300ms delay
   const debouncedSearch = useDebounce(searchInput, 300);
@@ -117,7 +120,14 @@ export default function TokenDropdown({ onTokenChange }: TokenDropdownProps) {
                       onClick={() => handleTokenSelect(token)}
                       className="w-full text-left px-4 py-2 transition-colors flex items-center justify-between hover:bg-slate-700 text-white"
                     >
-                      <span className="font-medium">{token}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{token}</span>
+                        <StarIcon
+                          isStarred={isInWatchlist(token)}
+                          onClick={() => toggleWatchlist(token)}
+                          size={14}
+                        />
+                      </div>
                       {token === selectedToken && (
                         <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
                       )}
@@ -138,7 +148,14 @@ export default function TokenDropdown({ onTokenChange }: TokenDropdownProps) {
                       : "hover:bg-slate-700 text-white"
                   }`}
                 >
-                  <span className="font-medium">{token}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{token}</span>
+                    <StarIcon
+                      isStarred={isInWatchlist(token)}
+                      onClick={() => toggleWatchlist(token)}
+                      size={14}
+                    />
+                  </div>
                   {token === selectedToken && (
                     <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
                   )}

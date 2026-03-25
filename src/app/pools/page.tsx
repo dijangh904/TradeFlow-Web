@@ -3,6 +3,8 @@
 import React from "react";
 import { Plus, TrendingUp, DollarSign, Percent } from "lucide-react";
 import Navbar from "../../../Navbar";
+import { useWatchlist } from "../../hooks/useWatchlist";
+import StarIcon from "../../components/StarIcon";
 
 interface LiquidityPool {
   id: string;
@@ -54,6 +56,8 @@ const dummyPools: LiquidityPool[] = [
 ];
 
 export default function PoolsPage() {
+  const { toggleWatchlist, isInWatchlist } = useWatchlist();
+  
   const handleAddLiquidity = (pool: LiquidityPool) => {
     alert(`Add Liquidity functionality for ${pool.pair} would be implemented here. This is a mock message.`);
   };
@@ -142,7 +146,19 @@ export default function PoolsPage() {
                             {pool.token2.slice(0, 2)}
                           </div>
                         </div>
-                        <span className="font-semibold">{pool.pair}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold">{pool.pair}</span>
+                          <StarIcon
+                            isStarred={isInWatchlist(pool.token1)}
+                            onClick={() => toggleWatchlist(pool.token1)}
+                            size={14}
+                          />
+                          <StarIcon
+                            isStarred={isInWatchlist(pool.token2)}
+                            onClick={() => toggleWatchlist(pool.token2)}
+                            size={14}
+                          />
+                        </div>
                       </div>
                     </td>
                     <td className="p-4 text-right font-medium">{pool.tvl}</td>
