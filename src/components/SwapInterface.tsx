@@ -6,6 +6,7 @@ import TokenDropdown from "./TokenDropdown";
 import SettingsModal from "./SettingsModal";
 import HighSlippageWarning from "./HighSlippageWarning";
 import { useSlippage } from "../contexts/SlippageContext";
+import TokenInput from "./TokenInput";
 import Card from "./Card";
 import Button from "./ui/Button";
 import Tooltip from "./ui/Tooltip";
@@ -20,6 +21,8 @@ export default function SwapInterface() {
   const [toAmount, setToAmount] = useState("");
   const [priceImpact, setPriceImpact] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isTradeReviewOpen, setIsTradeReviewOpen] = useState(false);
+  const [fromBalance] = useState("1240.50"); // Mock balance for Requirement #69
   const { slippageTolerance } = useSlippage();
 
   // Load saved token selections on mount
@@ -82,14 +85,17 @@ export default function SwapInterface() {
     if (priceImpact > 5) {
       setIsHighSlippageWarningOpen(true);
     } else {
-      setIsSubmitting(true);
-      // Proceed with normal swap
-      console.log("Proceeding with normal swap");
-      try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      } finally {
-        setIsSubmitting(false);
-      }
+      setIsTradeReviewOpen(true);
+    }
+  };
+
+  const handleTradeConfirm = async () => {
+    setIsTradeReviewOpen(false);
+    setIsSubmitting(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -122,12 +128,11 @@ export default function SwapInterface() {
           <label className="block text-sm text-slate-400 mb-2">From</label>
           <div className="flex gap-3">
             <TokenDropdown onTokenChange={setFromToken} />
-            <input
-              type="number"
+            <TokenInput
               value={fromAmount}
-              onChange={(e) => handleFromAmountChange(e.target.value)}
+              onChange={handleFromAmountChange}
+              balance={fromBalance}
               placeholder="0.00"
-              className="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
             />
           </div>
         </div>
