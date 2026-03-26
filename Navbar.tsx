@@ -4,8 +4,9 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Wallet, Copy, Check, CreditCard } from "lucide-react";
-import NetworkSelector, { Network } from "./src/components/NetworkSelector";
-import FiatOnRampModal from "./src/components/FiatOnRampModal";
+import NetworkSelector, { Network } from "./NetworkSelector";
+import FiatOnRampModal from "./FiatOnRampModal";
+import NetworkFeeIndicator from "./ui/NetworkFeeIndicator";   // ← New import
 
 interface NavbarProps {
   address?: string;
@@ -23,6 +24,7 @@ export default function Navbar({ address, onConnect }: NavbarProps) {
         await navigator.clipboard.writeText(address);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+        toast.success("Address copied to clipboard");   // Optional: add toast
       } catch (err) {
         console.error('Failed to copy address:', err);
       }
@@ -67,6 +69,9 @@ export default function Navbar({ address, onConnect }: NavbarProps) {
       <div className="flex items-center gap-4">
         <NetworkSelector />
         
+        {/* Gas Tank Indicator - New Feature */}
+        <NetworkFeeIndicator />
+
         {/* Buy Crypto Button */}
         <button
           onClick={() => setIsFiatModalOpen(true)}
