@@ -205,28 +205,16 @@ export default function SwapInterface() {
   const isAnyModalOpen = isSettingsOpen || isHighSlippageWarningOpen || isTradeReviewOpen || isSuccessModalOpen;
   const isSwapValid = fromAmount && parseFloat(fromAmount) > 0 && !isSubmitting;
 
-  // Check if user has insufficient balance
-  const hasInsufficientBalance = fromAmount && parseFloat(fromAmount) > 0 && parseFloat(fromAmount) > parseFloat(fromBalance);
-
-  // Get button text and disabled state
-  const getButtonState = () => {
-    if (isSubmitting) {
-      return { disabled: true, text: "Confirming (" + timeLeft + ")", className: "bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" };
+  // Dynamic Price Impact color logic
+  const getPriceImpactColor = () => {
+    if (priceImpact < 1) {
+      return "text-emerald-400"; // Green for low impact (< 1%)
+    } else if (priceImpact >= 1 && priceImpact < 3) {
+      return "text-yellow-400"; // Yellow for medium impact (1% - 3%)
+    } else {
+      return "text-red-500 font-bold"; // Red for high impact (>= 3%)
     }
-    if (hasInsufficientBalance) {
-      return {
-        disabled: true,
-        text: `Insufficient ${fromToken} Balance`,
-        className: "bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
-      };
-    }
-    if (!fromAmount || parseFloat(fromAmount) <= 0) {
-      return { disabled: true, text: "Enter Amount", className: "bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed" };
-    }
-    return { disabled: false, text: "Swap Tokens", className: "bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed" };
   };
-
-  const buttonState = getButtonState();
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -325,7 +313,9 @@ export default function SwapInterface() {
             <Tooltip content="The estimated change in price due to the size of your trade.">
               <span className="text-slate-400 underline decoration-dotted decoration-slate-600 cursor-help">Price Impact</span>
             </Tooltip>
-            <span className={`${priceImpact > 5 ? "text-red-500 font-bold" : "text-slate-200"}`}>{priceImpact.toFixed(2)}%</span>
+            <span className={getPriceImpactColor()}>
+              {priceImpact.toFixed(2)}%
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <Tooltip content="Slippage tolerance.">
