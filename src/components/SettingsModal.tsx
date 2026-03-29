@@ -13,20 +13,34 @@ interface SettingsModalProps {
 }
 
 export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
-  const { slippageTolerance, setSlippageTolerance, transactionDeadline, setTransactionDeadline } = useSlippage();
+  const { slippageTolerance, setSlippageTolerance, isSlippageAuto, setIsSlippageAuto, transactionDeadline, setTransactionDeadline } = useSlippage();
   const { isExpertMode, setExpertMode, hasAcceptedRisk, acceptRisk } = useExpertMode();
   const [isExpertModalOpen, setIsExpertModalOpen] = useState(false);
 
   const presetOptions = [0.1, 0.5, 1.0, 3.0, 5.0];
 
   const handlePresetClick = (value: number) => {
-    setSlippageTolerance(value);
+    if (!isSlippageAuto) {
+      setSlippageTolerance(value);
+    }
   };
 
   const handleCustomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
-    if (!isNaN(value) && value >= 0 && value <= 50) {
-      setSlippageTolerance(value);
+    if (!isSlippageAuto) {
+      const value = parseFloat(e.target.value);
+      if (!isNaN(value) && value >= 0 && value <= 50) {
+        setSlippageTolerance(value);
+      }
+    }
+  };
+
+  const handleAutoToggle = () => {
+    const newAutoState = !isSlippageAuto;
+    setIsSlippageAuto(newAutoState);
+
+    // When enabling auto, set to safe default (0.5%)
+    if (newAutoState) {
+      setSlippageTolerance(0.5);
     }
   };
 
@@ -100,14 +114,39 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 Your transaction will revert if the price changes unfavorably by more than this percentage
               </p>
 
+              {/* Auto Toggle */}
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <span className="text-sm font-medium text-white">Auto Slippage</span>
+                  <p className="text-xs text-slate-400">Use algorithmically safe default (0.5%)</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleAutoToggle}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900 ${isSlippageAuto ? "bg-blue-600" : "bg-slate-700"
+                    }`}
+                  role="switch"
+                  aria-checked={isSlippageAuto}
+                >
+                  <span
+                    className={`${isSlippageAuto ? "translate-x-6" : "translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                  />
+                </button>
+              </div>
+
+              {/* Preset Options - Disabled when Auto is on */}
               <div className="grid grid-cols-5 gap-2 mb-4">
                 {presetOptions.map((option) => (
                   <button
                     key={option}
                     onClick={() => handlePresetClick(option)}
-                    className={`py-2 px-3 rounded-lg text-sm font-medium transition-colors ${slippageTolerance === option
+                    disabled={isSlippageAuto}
+                    className={`py-2 px-3 rounded-lg text-sm font-medium transition-colors ${slippageTolerance === option && !isSlippageAuto
                         ? 'bg-blue-600 text-white'
-                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                        : isSlippageAuto
+                          ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                          : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
                       }`}
                   >
                     {option}%
@@ -115,6 +154,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 ))}
               </div>
 
+              {/* Custom Input - Disabled when Auto is on */}
               <div className="flex items-center gap-3">
                 <input
                   type="number"
@@ -123,44 +163,62 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   min="0"
                   max="50"
                   step="0.1"
-                  className="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                  placeholder="Custom"
+                  disabled={isSlippageAuto}
+                  className={`flex-1 rounded-lg px-4 py-2 text-white placeholder-slate-400 focus:outline-none transition-colors ${isSlippageAuto
+                      ? 'bg-slate-800 border border-slate-600 text-slate-500 cursor-not-allowed'
+                      : 'bg-slate-700 border border-slate-600 focus:border-blue-500'
+                    }`}
+                  placeholder={isSlippageAuto ? "Auto (0.5%)" : "Custom"}
                 />
                 <span className="text-slate-400">%</span>
               </div>
 
-              {slippageTolerance < 0.1 && (
-                <p className="text-xs text-yellow-500 mt-2">
-                  Your transaction may fail
-                </p>
+              {/* Auto Indicator */}
+              {isSlippageAuto && (
+                <div className="mt-2 p-2 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                  <p className="text-xs text-blue-400">
+                    🤖 Auto slippage is enabled at 0.5% - Turn off "Auto" to set custom values
+                  </p>
+                </div>
               )}
-              {slippageTolerance > 5 && (
-                <p className="text-xs text-red-500 mt-2">
-                  High slippage tolerance may result in a bad trade
-                </p>
+
+              {/* Warnings - Only show when not in Auto mode */}
+              {!isSlippageAuto && (
+                <>
+                  {slippageTolerance < 0.1 && (
+                    <p className="text-xs text-yellow-500 mt-2">
+                      Your transaction may fail
+                    </p>
+                  )}
+                  {slippageTolerance > 5 && (
+                    <p className="text-xs text-red-500 mt-2">
+                      High slippage tolerance may result in a bad trade
+                    </p>
+                  )}
+                </>
               )}
-            {/* Transaction Deadline */}
-            <div>
-              <h3 className="text-lg font-medium text-white mb-4">Transaction Deadline</h3>
-              <p className="text-sm text-slate-400 mb-4">
-                Your transaction will revert if it is pending for more than this period
-              </p>
-              <div className="flex items-center gap-3">
-                <input
-                  type="number"
-                  value={transactionDeadline}
-                  onChange={(e) => {
-                    const val = parseInt(e.target.value);
-                    if (!isNaN(val) && val > 0) setTransactionDeadline(val);
-                  }}
-                  min="1"
-                  className="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                  placeholder="20"
-                />
-                <span className="text-slate-400">minutes</span>
+              {/* Transaction Deadline */}
+              <div>
+                <h3 className="text-lg font-medium text-white mb-4">Transaction Deadline</h3>
+                <p className="text-sm text-slate-400 mb-4">
+                  Your transaction will revert if it is pending for more than this period
+                </p>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    value={transactionDeadline}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      if (!isNaN(val) && val > 0) setTransactionDeadline(val);
+                    }}
+                    min="1"
+                    className="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    placeholder="20"
+                  />
+                  <span className="text-slate-400">minutes</span>
+                </div>
               </div>
             </div>
-          </div>
         </Card>
       </div>
 
