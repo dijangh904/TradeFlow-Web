@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Plus, TrendingUp, DollarSign, Percent } from "lucide-react";
-import Navbar from "../../../Navbar";
+import Navbar from "../../components/Navbar";
 import { useWatchlist } from "../../hooks/useWatchlist";
 import StarIcon from "../../components/StarIcon";
 
@@ -24,51 +24,50 @@ const dummyPools: LiquidityPool[] = [
     token2: "USDC",
     tvl: "$2,450,000",
     volume24h: "$185,000",
-    apy: "12.5%"
+    apy: "12.5%",
   },
   {
-    id: "2", 
+    id: "2",
     pair: "yXLM/XLM",
     token1: "yXLM",
     token2: "XLM",
     tvl: "$1,875,000",
     volume24h: "$142,000",
-    apy: "8.3%"
+    apy: "8.3%",
   },
   {
     id: "3",
     pair: "USDC/EURC",
-    token1: "USDC", 
+    token1: "USDC",
     token2: "EURC",
     tvl: "$3,200,000",
     volume24h: "$298,000",
-    apy: "15.7%"
+    apy: "15.7%",
   },
   {
     id: "4",
     pair: "XLM/ETH",
     token1: "XLM",
-    token2: "ETH", 
+    token2: "ETH",
     tvl: "$980,000",
     volume24h: "$76,000",
-    apy: "10.2%"
-  }
+    apy: "10.2%",
+  },
 ];
 
 export default function PoolsPage() {
   const { toggleWatchlist, isInWatchlist } = useWatchlist();
-  
+
   const handleAddLiquidity = (pool: LiquidityPool) => {
-    alert(`Add Liquidity functionality for ${pool.pair} would be implemented here. This is a mock message.`);
+    alert(
+      `Add Liquidity functionality for ${pool.pair} would be implemented here. This is a mock message.`,
+    );
   };
 
   return (
     <div className="min-h-screen bg-tradeflow-dark text-white font-sans flex flex-col">
       {/* Header */}
-      <Navbar
-        address=""
-        onConnect={() => {}}
-      />
+      <Navbar address="" onConnect={() => {}} />
 
       {/* Main Content */}
       <div className="flex-1 px-8 py-8">
@@ -91,7 +90,7 @@ export default function PoolsPage() {
               <DollarSign className="text-tradeflow-accent" size={24} />
             </div>
           </div>
-          
+
           <div className="bg-tradeflow-secondary border border-tradeflow-muted rounded-2xl p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -101,7 +100,7 @@ export default function PoolsPage() {
               <TrendingUp className="text-green-400" size={24} />
             </div>
           </div>
-          
+
           <div className="bg-tradeflow-secondary border border-tradeflow-muted rounded-2xl p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -118,7 +117,7 @@ export default function PoolsPage() {
           <div className="p-6 border-b border-tradeflow-muted">
             <h2 className="text-xl font-semibold">Available Pools</h2>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-tradeflow-dark/50 text-tradeflow-muted text-sm uppercase">
@@ -162,7 +161,9 @@ export default function PoolsPage() {
                       </div>
                     </td>
                     <td className="p-4 text-right font-medium">{pool.tvl}</td>
-                    <td className="p-4 text-right font-medium">{pool.volume24h}</td>
+                    <td className="p-4 text-right font-medium">
+                      {pool.volume24h}
+                    </td>
                     <td className="p-4 text-right">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-400/20 text-green-400">
                         {pool.apy}
