@@ -13,7 +13,6 @@ import NewsBanner from "../components/NewsBanner";
 import useTransactionToast from "../lib/useTransactionToast";
 import AddTrustlineButton from "../components/AddTrustlineButton";
 import ProModeSection from "../components/ProModeSection";
-import { formatCurrency, formatDate } from "../lib/format";
 import WatchlistTab from "../components/WatchlistTab";
 import TabNavigation from "../components/TabNavigation";
 import { useWatchlist } from "../hooks/useWatchlist";
@@ -59,10 +58,12 @@ export default function Page() {
   useEffect(() => {
     fetchInvoices();
   }, []);
+  const toast = useTransactionToast();
+
   const handleTestToast = () => {
-    useTransactionToast().loading();
-    useTransactionToast().success();
-    useTransactionToast().error();
+    toast.loading();
+    toast.success();
+    toast.error();
   };
 
   const handleInvoiceMint = (data: any) => {
@@ -235,13 +236,6 @@ export default function Page() {
         onClose={() => setIsModalOpen(false)}
         onConnect={handleConnectWallet}
       />
-
-      <button
-        onClick={handleTestToast}
-        className="fixed bottom-5 right-5 bg-red-500 px-4 py-2 capitalize rounded-md"
-      >
-        Test toast
-      </button>
 
       {/* Invoice Mint Form Modal */}
       {showMintForm && (

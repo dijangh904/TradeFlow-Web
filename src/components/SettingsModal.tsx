@@ -177,7 +177,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               {isSlippageAuto && (
                 <div className="mt-2 p-2 bg-blue-900/20 border border-blue-500/30 rounded-lg">
                   <p className="text-xs text-blue-400">
-                    🤖 Auto slippage is enabled at 0.5% - Turn off "Auto" to set custom values
+                    🤖 Auto slippage is enabled at 0.5% - Turn off &quot;Auto&quot; to set custom values
                   </p>
                 </div>
               )}
@@ -219,6 +219,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 </div>
               </div>
             </div>
+          </div>
         </Card>
       </div>
 

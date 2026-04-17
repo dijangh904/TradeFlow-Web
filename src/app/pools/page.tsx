@@ -127,75 +127,78 @@ export default function PoolsPage() {
           <div className="overflow-x-auto">
           
           {isLoading ? (
-            <TableSkeleton />
+            <div className="p-8 text-center text-tradeflow-muted italic">
+              Loading liquidity pools...
+            </div>
           ) : (
             <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-tradeflow-dark/50 text-tradeflow-muted text-sm uppercase">
-                <tr>
-                  <th className="p-4 text-left">Pair</th>
-                  <th className="p-4 text-right">TVL</th>
-                  <th className="p-4 text-right">Volume (24h)</th>
-                  <th className="p-4 text-right">APY</th>
-                  <th className="p-4 text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dummyPools.map((pool) => (
-                  <tr
-                    key={pool.id}
-                    className="border-b border-tradeflow-muted/50 hover:bg-tradeflow-muted/20 transition"
-                  >
-                    <td className="p-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="flex -space-x-2">
-                          <div className="w-8 h-8 bg-tradeflow-accent rounded-full flex items-center justify-center text-xs font-bold">
-                            {pool.token1.slice(0, 2)}
-                          </div>
-                          <div className="w-8 h-8 bg-tradeflow-success rounded-full flex items-center justify-center text-xs font-bold">
-                            {pool.token2.slice(0, 2)}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold">{pool.pair}</span>
-                          <StarIcon
-                            isStarred={isInWatchlist(pool.token1)}
-                            onClick={() => toggleWatchlist(pool.token1)}
-                            size={14}
-                          />
-                          <StarIcon
-                            isStarred={isInWatchlist(pool.token2)}
-                            onClick={() => toggleWatchlist(pool.token2)}
-                            size={14}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4 text-right font-medium">{pool.tvl}</td>
-                    <td className="p-4 text-right font-medium">
-                      {pool.volume24h}
-                    </td>
-                    <td className="p-4 text-right">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-400/20 text-green-400">
-                        {pool.apy}
-                      </span>
-                    </td>
-                    <td className="p-4 text-center">
-                      <button
-                        onClick={() => handleAddLiquidity(pool)}
-                        className="inline-flex items-center px-3 py-1.5 bg-tradeflow-accent hover:bg-tradeflow-accent/80 text-white text-sm font-medium rounded-lg transition-colors"
-                      >
-                        <Plus size={16} className="mr-1" />
-                        Add Liquidity
-                      </button>
-                    </td>
+              <table className="w-full">
+                <thead className="bg-tradeflow-dark/50 text-tradeflow-muted text-sm uppercase">
+                  <tr>
+                    <th className="p-4 text-left">Pair</th>
+                    <th className="p-4 text-right">TVL</th>
+                    <th className="p-4 text-right">Volume (24h)</th>
+                    <th className="p-4 text-right">APY</th>
+                    <th className="p-4 text-center">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {dummyPools.map((pool) => (
+                    <tr
+                      key={pool.id}
+                      className="border-b border-tradeflow-muted/50 hover:bg-tradeflow-muted/20 transition"
+                    >
+                      <td className="p-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex -space-x-2">
+                            <div className="w-8 h-8 bg-tradeflow-accent rounded-full flex items-center justify-center text-xs font-bold">
+                              {pool.token1.slice(0, 2)}
+                            </div>
+                            <div className="w-8 h-8 bg-tradeflow-success rounded-full flex items-center justify-center text-xs font-bold">
+                              {pool.token2.slice(0, 2)}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold">{pool.pair}</span>
+                            <StarIcon
+                              isStarred={isInWatchlist(pool.token1)}
+                              onClick={() => toggleWatchlist(pool.token1)}
+                              size={14}
+                            />
+                            <StarIcon
+                              isStarred={isInWatchlist(pool.token2)}
+                              onClick={() => toggleWatchlist(pool.token2)}
+                              size={14}
+                            />
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-4 text-right font-medium">{pool.tvl}</td>
+                      <td className="p-4 text-right font-medium">
+                        {pool.volume24h}
+                      </td>
+                      <td className="p-4 text-right">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-400/20 text-green-400">
+                          {pool.apy}
+                        </span>
+                      </td>
+                      <td className="p-4 text-center">
+                        <button
+                          onClick={() => handleAddLiquidity(pool)}
+                          className="inline-flex items-center px-3 py-1.5 bg-tradeflow-accent hover:bg-tradeflow-accent/80 text-white text-sm font-medium rounded-lg transition-colors"
+                        >
+                          <Plus size={16} className="mr-1" />
+                          Add Liquidity
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

@@ -17,11 +17,7 @@ import {
   Networks,
 } from "soroban-client";
 
-// Re-export constants for backward compatibility if needed, 
-// though we use the ones from the kit now.
-export { FREIGHTER_ID, XBULL_ID, ALBEDO_ID };
-
-// Define WalletType as string to match the kit's expected IDs
+// WalletType definition
 export type WalletType = string;
 
 // Default to Testnet for development
@@ -198,7 +194,7 @@ export async function addTrustline(assetCode: string, assetIssuer: string, walle
 
   // If walletType is provided, set it temporarily
   if (walletType) {
-    kit.setWallet(walletType);
+    walletKit.setWallet(walletType);
   }
   
   const { address: publicKey } = await walletKit.getAddress();
@@ -236,8 +232,8 @@ export async function signTransaction(
   xdr: string,
   options?: any,
 ): Promise<string> {
-  const { address: publicKey } = await kit.getAddress();
-  const { signedTxXdr } = await kit.signTransaction(xdr, {
+  const { address: publicKey } = await walletKit.getAddress();
+  const { signedTxXdr } = await walletKit.signTransaction(xdr, {
     address: publicKey,
     networkPassphrase: NETWORK_PASSPHRASE,
     ...options,
@@ -263,4 +259,4 @@ export async function isWalletConnected(): Promise<boolean> {
   }
 }
 
-export { kit as walletKit, FREIGHTER_ID, XBULL_ID, ALBEDO_ID };
+export { FREIGHTER_ID, XBULL_ID, ALBEDO_ID };
