@@ -5,7 +5,8 @@ import { connectWallet, WalletType } from "../lib/stellar";
 import { PlusCircle, ShieldCheck, Landmark, Star } from "lucide-react";
 import LoanTable from "../components/LoanTable";
 import SkeletonRow from "../components/SkeletonRow";
-import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
+import StickyHeader from "../components/StickyHeader";
 import Card from "../components/Card";
 import WalletModal from "../components/WalletModal";
 import InvoiceMintForm from "../components/InvoiceMintForm";
@@ -126,19 +127,20 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-tradeflow-dark text-white font-sans">
-      {/* Sidebar */}
-      <Sidebar
-        address={address}
-        onConnect={() => setIsModalOpen(true)}
+      {/* Sticky Header */}
+      <StickyHeader
+        title="Marketplace"
+        subtitle="Trade and manage Real World Asset tokens"
       />
 
-      {/* Main Content Area */}
-      <div className="lg:pl-0">
-        {/* Mobile Top Spacer */}
-        <div className="lg:hidden h-16" />
-
-        {/* News Banner */}
-        <NewsBanner />
+      {/* Main Content */}
+      <div className="px-4 lg:px-8 py-6">
+        {/* Tab Navigation */}
+        <TabNavigation
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
 
         {/* Main Content */}
         <div className="flex-1 px-4 lg:px-8">
