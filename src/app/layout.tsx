@@ -8,6 +8,8 @@ import { NetworkCongestionProvider } from "../contexts/NetworkCongestionContext"
 import Footer from "../components/layout/Footer";
 import NetworkCongestionBanner from "../components/NetworkCongestionBanner";
 import ErrorBoundary from "../components/ErrorBoundary";
+import PageTransition from "../components/PageTransition";
+import QueryProvider from "../providers/QueryClientProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,14 +24,18 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased` }>
+      <body className={`${inter.variable} font-sans antialiased`}>
         <ErrorBoundary>
           <NetworkCongestionProvider>
             <SlippageProvider>
               <ToasterProvider />
               {/* <Toaster position="top-right" richColors closeButton /> */}
               <NetworkCongestionBanner />
-              {children}
+              <QueryProvider>
+                <PageTransition>
+                  {children}
+                </PageTransition>
+              </QueryProvider>
               <Footer />
             </SlippageProvider>
           </NetworkCongestionProvider>
