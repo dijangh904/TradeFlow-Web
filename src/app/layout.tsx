@@ -36,6 +36,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   {children}
                 </PageTransition>
               </QueryProvider>
+              <PageTransition>
+                {children}
+              </PageTransition>
               <Footer />
             </SlippageProvider>
           </NetworkCongestionProvider>
